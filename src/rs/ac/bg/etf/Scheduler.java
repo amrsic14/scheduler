@@ -8,6 +8,6 @@ public abstract class Scheduler {
 
 	public static Scheduler createScheduler(String[] args) {
 		// TODO: Implement this method
-		return new ShortestJobFirst();
+		return new ShortestJobFirst(3, true);
 	}
 }
