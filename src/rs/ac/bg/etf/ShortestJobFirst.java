@@ -8,9 +8,9 @@ public class ShortestJobFirst extends Scheduler {
 	private class SJFComparator implements Comparator<Pcb> {
 		@Override
 		public int compare(Pcb p1, Pcb p2) {
-			if (p1.getExecutionTime() > p2.getExecutionTime())
+			if (p1.getPcbData().executionTime > p2.getPcbData().executionTime)
 				return 1;
-			else if (p1.getExecutionTime() < p2.getExecutionTime())
+			else if (p1.getPcbData().executionTime < p2.getPcbData().executionTime)
 				return -1;
 			return 0;
 		}
@@ -20,8 +20,8 @@ public class ShortestJobFirst extends Scheduler {
 	private final boolean isPreemptive;
 	private PriorityQueue<Pcb> scheduler;
 
-	public ShortestJobFirst(double expAvg, boolean isPreemptive) {
-		this.alpha = expAvg;
+	public ShortestJobFirst(double exponentialAvgerage, boolean isPreemptive) {
+		this.alpha = exponentialAvgerage;
 		this.isPreemptive = isPreemptive;
 		this.scheduler = new PriorityQueue<>(new SJFComparator());
 	}
@@ -29,12 +29,43 @@ public class ShortestJobFirst extends Scheduler {
 	@Override
 	public Pcb get(int cpuId) {
 		// TODO Auto-generated method stub
-		return null;
+		return scheduler.remove();
 	}
 
 	@Override
 	public void put(Pcb pcb) {
-		// TODO Auto-generated method stub
+		// if it is new process, it will have default priority
+		if (pcb.getPcbData() == null) {
+			pcb.setPcbData(new PcbData());
+		} else {
+			pcb.getPcbData().executionTime += pcb.getExecutionTime();
+			pcb.getPcbData().executionTime /= alpha;
+		}
+		scheduler.add(pcb);
+	}
 
+	public static void main(String args[]) {
+		Pcb[] p = new Pcb[5];
+		ShortestJobFirst s = new ShortestJobFirst(0.7, false);
+		for (int i = 0; i < 5; i++)
+			p[i] = new Pcb();
+		for (int i = 0; i < 5; i++)
+			s.put(p[i]);
+		for (int i = 0; i < 5; i++) {
+			Pcb pp = s.get(1);
+			System.out.println(pp.getId() + " - " + pp.getPcbData().executionTime);
+		}
+		for (int i = 0; i < 5; i++)
+			s.put(p[i]);
+		for (int i = 0; i < 5; i++) {
+			Pcb pp = s.get(1);
+			System.out.println(pp.getId() + " - " + pp.getPcbData().executionTime);
+		}
+		for (int i = 0; i < 5; i++)
+			s.put(p[i]);
+		for (int i = 0; i < 5; i++) {
+			Pcb pp = s.get(1);
+			System.out.println(pp.getId() + " - " + pp.getPcbData().executionTime);
+		}
 	}
 }
