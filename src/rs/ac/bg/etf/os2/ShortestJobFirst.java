@@ -1,4 +1,4 @@
-package rs.ac.bg.etf;
+package rs.ac.bg.etf.os2;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -28,44 +28,35 @@ public class ShortestJobFirst extends Scheduler {
 
 	@Override
 	public Pcb get(int cpuId) {
-		// TODO Auto-generated method stub
-		return scheduler.remove();
+		PcbData.runningPCB = scheduler.remove();
+		return PcbData.runningPCB;
 	}
 
-	@Override
-	public void put(Pcb pcb) {
+	private void setExecutionTime(Pcb pcb) {
 		// if it is new process, it will have default priority
 		if (pcb.getPcbData() == null) {
 			pcb.setPcbData(new PcbData());
 		} else {
 			pcb.getPcbData().executionTime += pcb.getExecutionTime();
-			pcb.getPcbData().executionTime /= alpha;
+			pcb.getPcbData().executionTime *= alpha;
 		}
+	}
+
+	private void tryPreemption(Pcb pcb) {
+		if (PcbData.runningPCB != null
+				&& pcb.getPcbData().executionTime < PcbData.runningPCB.getPcbData().executionTime)
+			PcbData.runningPCB.preempt();
+	}
+
+	@Override
+	public void put(Pcb pcb) {
+		setExecutionTime(pcb);
 		scheduler.add(pcb);
+		if (isPreemptive)
+			tryPreemption(pcb);
 	}
 
 	public static void main(String args[]) {
-		Pcb[] p = new Pcb[5];
-		ShortestJobFirst s = new ShortestJobFirst(0.7, false);
-		for (int i = 0; i < 5; i++)
-			p[i] = new Pcb();
-		for (int i = 0; i < 5; i++)
-			s.put(p[i]);
-		for (int i = 0; i < 5; i++) {
-			Pcb pp = s.get(1);
-			System.out.println(pp.getId() + " - " + pp.getPcbData().executionTime);
-		}
-		for (int i = 0; i < 5; i++)
-			s.put(p[i]);
-		for (int i = 0; i < 5; i++) {
-			Pcb pp = s.get(1);
-			System.out.println(pp.getId() + " - " + pp.getPcbData().executionTime);
-		}
-		for (int i = 0; i < 5; i++)
-			s.put(p[i]);
-		for (int i = 0; i < 5; i++) {
-			Pcb pp = s.get(1);
-			System.out.println(pp.getId() + " - " + pp.getPcbData().executionTime);
-		}
+		
 	}
 }

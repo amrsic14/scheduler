@@ -1,4 +1,4 @@
-package rs.ac.bg.etf;
+package rs.ac.bg.etf.os2;
 
 public abstract class Scheduler {
 	

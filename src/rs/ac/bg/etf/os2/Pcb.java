@@ -1,9 +1,8 @@
-package rs.ac.bg.etf;
+package rs.ac.bg.etf.os2;
 
 public class Pcb {
 	
 	private PcbData pcbData = null;
-	private int xTime;
 	public static int id=0;
 	private int myid=++id;
 	
@@ -13,11 +12,11 @@ public class Pcb {
 		RUNNING, READY, BLOCKED, CREATED;
 	}
 	
-	public Pcb() {
-		xTime = 18;//(int) (Math.random()*31);
-	}
+	public Pcb() {}
 
-	public void preempt() {};
+	public void preempt() {
+		System.out.println("preempt");
+	};
 
 	public int getId() {
 		return myid;

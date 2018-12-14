@@ -1,6 +1,6 @@
-package rs.ac.bg.etf;
+package rs.ac.bg.etf.os2;
 
-public class MultilevelFeedbackQueue extends Scheduler {
+public class CompletelyFairScheduler extends Scheduler {
 
 	@Override
 	public Pcb get(int cpuId) {
