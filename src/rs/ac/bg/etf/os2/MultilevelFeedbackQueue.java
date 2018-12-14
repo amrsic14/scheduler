@@ -3,7 +3,7 @@ package rs.ac.bg.etf.os2;
 import java.util.LinkedList;
 
 public class MultilevelFeedbackQueue extends Scheduler {
-
+	
 	private long[] timeSlices;
 	private LinkedList<Pcb>[] queues;
 
@@ -59,7 +59,9 @@ public class MultilevelFeedbackQueue extends Scheduler {
 	public void put(Pcb pcb) {
 		if (pcb.getPcbData() == null)
 			pcb.setPcbData(new PcbData(pcb.getPriority()));
-		queues[nextQueue(pcb)].add(pcb);
+		int nextQueue = nextQueue(pcb);
+		pcb.setTimeslice(timeSlices[nextQueue]);
+		queues[nextQueue].add(pcb);
 	}
 
 }

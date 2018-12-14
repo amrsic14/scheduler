@@ -45,7 +45,7 @@ public class Pcb {
 	};
 
 	public static long getCurrentTime() {
-		return 1L;
+		return System.currentTimeMillis();
 	};
 
 	public static int getProcessCount() {

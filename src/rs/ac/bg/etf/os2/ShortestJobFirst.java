@@ -36,6 +36,7 @@ public class ShortestJobFirst extends Scheduler {
 		// if it is new process, it will have default priority
 		if (pcb.getPcbData() == null) {
 			pcb.setPcbData(new PcbData());
+			pcb.setTimeslice(0);
 		} else {
 			pcb.getPcbData().executionTime += pcb.getExecutionTime();
 			pcb.getPcbData().executionTime *= alpha;
@@ -56,7 +57,4 @@ public class ShortestJobFirst extends Scheduler {
 			tryPreemption(pcb);
 	}
 
-	public static void main(String args[]) {
-		
-	}
 }
