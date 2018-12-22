@@ -1,19 +1,32 @@
 package com.etf.os2.project.scheduler;
 
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 import com.etf.os2.project.process.*;
 
 public class MultilevelFeedbackQueue extends Scheduler {
 
 	private long[] timeSlices;
-	private LinkedList<Pcb>[] queues;
+	private PriorityQueue<Pcb>[] queues;
+	
+	private class MFQComparator implements Comparator<Pcb> {
+		@Override
+		public int compare(Pcb p1, Pcb p2) {
+			if (p1.getPriority() > p2.getPriority())
+				return 1;
+			else if (p1.getPriority() < p2.getPriority())
+				return -1;
+			return 0;
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	private void initializeFields(int numberOfQueues, long[] timeSlices) {
-		queues = new LinkedList[numberOfQueues];
+		queues = new PriorityQueue[numberOfQueues];
 		for (int i = 0; i < queues.length; i++)
-			queues[i] = new LinkedList<Pcb>();
+			queues[i] = new PriorityQueue<Pcb>(new MFQComparator());
 		this.timeSlices = new long[timeSlices.length];
 		System.arraycopy(timeSlices, 0, this.timeSlices, 0, timeSlices.length);
 	}
@@ -36,7 +49,7 @@ public class MultilevelFeedbackQueue extends Scheduler {
 	public Pcb get(int cpuId) {
 		int nextQueue = getNextQueue();
 		if (nextQueue != -1)
-			return queues[getNextQueue()].removeFirst();
+			return queues[getNextQueue()].poll();
 		return null;
 	}
 
