@@ -1,4 +1,6 @@
-package rs.ac.bg.etf.os2;
+package com.etf.os2.project.scheduler;
+
+import com.etf.os2.project.process.Pcb;
 
 public abstract class Scheduler {
 
@@ -24,9 +26,4 @@ public abstract class Scheduler {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Scheduler s = Scheduler.createScheduler(args);
-		s.equals(s);
-	}
-
 }

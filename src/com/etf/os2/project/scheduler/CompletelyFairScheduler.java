@@ -1,7 +1,9 @@
-package rs.ac.bg.etf.os2;
+package com.etf.os2.project.scheduler;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import com.etf.os2.project.process.*;
 
 public class CompletelyFairScheduler extends Scheduler {
 
@@ -24,9 +26,11 @@ public class CompletelyFairScheduler extends Scheduler {
 
 	@Override
 	public Pcb get(int cpuId) {
-		Pcb pcb = scheduler.remove();
-		pcb.getPcbData().timeInScheduler = Pcb.getCurrentTime() - pcb.getPcbData().timeInScheduler;
-		pcb.setTimeslice(pcb.getPcbData().timeInScheduler / Pcb.getProcessCount());
+		Pcb pcb = scheduler.poll();
+		if (pcb != null) {
+			pcb.getPcbData().timeInScheduler = Pcb.getCurrentTime() - pcb.getPcbData().timeInScheduler;
+			pcb.setTimeslice(pcb.getPcbData().timeInScheduler / Pcb.getProcessCount());
+		}
 		return pcb;
 	}
 
@@ -37,12 +41,6 @@ public class CompletelyFairScheduler extends Scheduler {
 		pcb.getPcbData().executionTime = pcb.getPcbData().timeInScheduler + pcb.getExecutionTime();
 		pcb.getPcbData().timeInScheduler = Pcb.getCurrentTime();
 		scheduler.add(pcb);
-	}
-
-	public static void main(String[] args) {
-		int x = 5;
-		x = 7 - x;
-		System.out.println(x);
 	}
 
 }

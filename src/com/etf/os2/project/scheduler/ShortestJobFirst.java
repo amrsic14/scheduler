@@ -1,7 +1,9 @@
-package rs.ac.bg.etf.os2;
+package com.etf.os2.project.scheduler;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import com.etf.os2.project.process.*;
 
 public class ShortestJobFirst extends Scheduler {
 
@@ -28,7 +30,7 @@ public class ShortestJobFirst extends Scheduler {
 
 	@Override
 	public Pcb get(int cpuId) {
-		PcbData.runningPCB = scheduler.remove();
+		PcbData.runningPCB = scheduler.poll();
 		return PcbData.runningPCB;
 	}
 
