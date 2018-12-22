@@ -1,7 +1,6 @@
 package com.etf.os2.project.scheduler;
 
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 import com.etf.os2.project.process.*;
