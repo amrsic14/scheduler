@@ -8,11 +8,10 @@ public abstract class Scheduler {
 
 	public abstract void put(Pcb pcb);
 	
-	//TODO check arguments validity
 	public static Scheduler createScheduler(String[] args) {
 		switch (args[0]) {
 		case "SJF":
-			return new ShortestJobFirst(Double.parseDouble(args[1]), Boolean.parseBoolean(args[2]));
+			return new ShortestJobFirst(Double.parseDouble(args[1]), Boolean.parseBoolean(args[2]), Integer.parseInt(args[3]));
 		case "MFQ":
 			long[] timeSlices = new long[args.length -2];
 			for(int i = 2; i < args.length; i++)

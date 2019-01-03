@@ -10,11 +10,7 @@ public class CompletelyFairScheduler extends Scheduler {
 	private class CFSComparator implements Comparator<Pcb> {
 		@Override
 		public int compare(Pcb p1, Pcb p2) {
-			if (p1.getPcbData().executionTime > p2.getPcbData().executionTime)
-				return 1;
-			else if (p1.getPcbData().executionTime < p2.getPcbData().executionTime)
-				return -1;
-			return 0;
+			return (int) (p1.getPcbData().executionTime - p2.getPcbData().executionTime);
 		}
 	}
 

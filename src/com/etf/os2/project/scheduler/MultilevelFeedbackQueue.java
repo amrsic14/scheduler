@@ -1,31 +1,18 @@
 package com.etf.os2.project.scheduler;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
-
+import java.util.LinkedList;
 import com.etf.os2.project.process.*;
 
 public class MultilevelFeedbackQueue extends Scheduler {
 
 	private long[] timeSlices;
-	private PriorityQueue<Pcb>[] queues;
-	
-	private class MFQComparator implements Comparator<Pcb> {
-		@Override
-		public int compare(Pcb p1, Pcb p2) {
-			if (p1.getPriority() > p2.getPriority())
-				return 1;
-			else if (p1.getPriority() < p2.getPriority())
-				return -1;
-			return 0;
-		}
-	}
+	private LinkedList<Pcb>[] queues;
 
 	@SuppressWarnings("unchecked")
 	private void initializeFields(int numberOfQueues, long[] timeSlices) {
-		queues = new PriorityQueue[numberOfQueues];
+		queues = new LinkedList[numberOfQueues];
 		for (int i = 0; i < queues.length; i++)
-			queues[i] = new PriorityQueue<Pcb>(new MFQComparator());
+			queues[i] = new LinkedList<Pcb>();
 		this.timeSlices = new long[timeSlices.length];
 		System.arraycopy(timeSlices, 0, this.timeSlices, 0, timeSlices.length);
 	}
@@ -40,7 +27,7 @@ public class MultilevelFeedbackQueue extends Scheduler {
 			if (!queues[iterator].isEmpty())
 				return iterator;
 		}
-		//empty scheduler
+		// empty scheduler
 		return -1;
 	}
 
@@ -48,7 +35,7 @@ public class MultilevelFeedbackQueue extends Scheduler {
 	public Pcb get(int cpuId) {
 		int nextQueue = getNextQueue();
 		if (nextQueue != -1)
-			return queues[getNextQueue()].poll();
+			return queues[getNextQueue()].removeFirst();
 		return null;
 	}
 
@@ -75,13 +62,24 @@ public class MultilevelFeedbackQueue extends Scheduler {
 		}
 	}
 
+	private int getPriorityIndex(int queueIndex, int priority) {
+		int iterator = 0;
+		while (iterator < queues[queueIndex].size() && priority <= queues[queueIndex].get(iterator).getPriority())
+			iterator++;
+		return iterator;
+	}
+
 	@Override
 	public void put(Pcb pcb) {
 		if (pcb.getPcbData() == null)
 			pcb.setPcbData(new PcbData());
 		int nextQueue = nextQueue(pcb);
 		pcb.setTimeslice(timeSlices[nextQueue]);
-		queues[nextQueue].add(pcb);
+		if (pcb.getPreviousState() == Pcb.ProcessState.CREATED) {
+			queues[nextQueue].add(getPriorityIndex(nextQueue, pcb.getPriority()), pcb);
+		} else {
+			queues[nextQueue].addLast(pcb);
+		}
 	}
 
 }
