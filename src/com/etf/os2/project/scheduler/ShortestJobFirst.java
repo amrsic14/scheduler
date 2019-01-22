@@ -10,7 +10,12 @@ public class ShortestJobFirst extends Scheduler {
 	private class SJFComparator implements Comparator<Pcb> {
 		@Override
 		public int compare(Pcb p1, Pcb p2) {
-			return (int) (p1.getPcbData().executionTime - p2.getPcbData().executionTime);
+			if(p1.getPriority() == Integer.MAX_VALUE) return -1;
+			if(p2.getPriority() == Integer.MAX_VALUE) return 1;
+			int compare = (int) (p1.getPcbData().executionTime - p2.getPcbData().executionTime);
+			if (compare == 0)
+				compare = p1.getPriority() - p2.getPriority();
+			return compare;
 		}
 	}
 
